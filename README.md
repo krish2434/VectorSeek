@@ -50,7 +50,10 @@ Gemini 2.5 Flash API (with prompt constraints)
 Grounded Answer + Sources
 ```
 ## 🌐 Live Demo
-**Try the live demo here: https://vectorseek.streamlit.app/**
+
+<small>
+🔗 Try the live demo here: https://vectorseek.streamlit.app/
+</small>
 ---
 
 ## 📁 Project Structure
