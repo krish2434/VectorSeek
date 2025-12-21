@@ -1,302 +1,218 @@
-# VectorSeek - AI-Powered Research Paper Analysis
+# VectorSeek — AI-Powered Document Analysis & Semantic Search
 
 ## 🎯 Project Overview
 
-VectorSeek is a production-ready AI system designed specifically for semantic analysis and comprehension of research papers. It combines local semantic search with Google Gemini 2.5 Flash for intelligent research document analysis without running any LLMs locally.
+VectorSeek is a **production-ready AI system for intelligent analysis and question-answering over documents** such as **research papers, books, technical documentation, reports, and manuals**.
 
-**Key Features:**
-- 📚 Research paper upload and analysis
-- 🔍 Semantic search optimized for academic content
-- ☁️ Cloud LLM inference with Google Gemini 2.5 Flash
-- 🧠 Context-aware prompting for research-specific queries
-- 📖 Sentence-level chunking preserving research semantics
-- 📌 Citation tracking and source attribution
-- 💬 Interactive chat-style research interface
+It uses a **Hybrid Retrieval-Augmented Generation (RAG)** architecture that combines **local semantic search** with **Google Gemini 2.5 Flash** for accurate, grounded answers — without running any LLMs locally.
+
+The system is designed to scale across domains while enforcing **evidence-based responses** and **hallucination control**.
+
+---
+
+## 🚀 Key Features
+
+- 📄 Upload and analyze PDFs / text documents
+- 🔍 Semantic search across large document collections
+- ☁️ Cloud-based LLM inference using Google Gemini 2.5 Flash
+- 🧠 Context-aware prompting for technical and academic queries
+- 📖 Intelligent chunking preserving semantic coherence
+- 📌 Source attribution and citation tracking
+- 💬 Interactive chat-style interface
+- 🔐 Secure API key handling (no secrets in repo)
 
 ---
 
 ## 🏗️ Architecture
 
-### Research Paper Analysis Pipeline
+### Hybrid Document Analysis Pipeline
 
 **Local Components:**
-1. **Paper Ingestion** - Loads research papers (PDF/TXT) from `data/documents/`
-2. **Intelligent Chunking** - Splits papers by sentences preserving semantic coherence and citations
-3. **Embeddings** - Generates dense vector embeddings using `all-MiniLM-L6-v2`
-4. **Vector Database** - Stores embeddings in FAISS index for O(log n) retrieval
+1. **Document Ingestion** — Loads PDFs / TXT files from `data/documents/`
+2. **Intelligent Chunking** — Splits documents into semantically meaningful segments
+3. **Embeddings** — Dense vector embeddings via `all-MiniLM-L6-v2`
+4. **Vector Database** — FAISS index for fast similarity search
 
 **Cloud Component:**
-1. **LLM Inference** - Google Gemini 2.5 Flash for research analysis
-2. **Research-Focused Prompting** - Structured prompts enforce evidence-based responses with academic rigor
+1. **LLM Inference** — Google Gemini 2.5 Flash
+2. **Grounded Prompting** — Answers constrained strictly to retrieved context
 
 **Frontend:**
+1. **Streamlit UI** — Chat-based document exploration
+2. **Source Attribution** — Displays which document sections support each answer
 
-1. **Streamlit UI** - Chat interface with context preview
-2. **Source Attribution** - Shows which documents provided the answer
+---
 
-### Data Flow
+## 🔄 Data Flow
 
-```
 User Question
-     ↓
+↓
 Query Embedding (Sentence Transformers)
-     ↓
-FAISS Semantic Search (top-5 chunks)
-     ↓
+↓
+FAISS Semantic Search (top-k chunks)
+↓
 Retrieved Context
-     ↓
-Gemini 2.5 Flash API (with prompt constraints)
-     ↓
-Grounded Answer + Sources
-```
+↓
+Gemini 2.5 Flash API (with grounding constraints)
+↓
+Answer + Source References
+
+yaml
+Copy code
 
 ---
 
 ## 📁 Project Structure
 
-```
 VectorSeek/
 ├── data/
-│   └── documents/              # Place PDF/TXT files here
+│ └── documents/ # PDFs / TXT documents
 ├── embeddings/
-│   └── build_index.py          # FAISS index building
+│ └── build_index.py # FAISS index builder
 ├── rag/
-│   ├── retriever.py            # Semantic search
-│   ├── gemini_llm.py           # Gemini API wrapper
-│   └── rag_pipeline.py         # RAG orchestration
-├── indexes/                    # FAISS indices (auto-generated)
-├── app.py                      # Streamlit application
-├── requirements.txt            # Dependencies
-├── .env.example               # Environment template
-└── README.md                  # This file
-```
+│ ├── retriever.py # Semantic retrieval
+│ ├── gemini_llm.py # Gemini API integration
+│ └── rag_pipeline.py # RAG orchestration
+├── indexes/ # FAISS indices (auto-generated)
+├── app.py # Streamlit application
+├── requirements.txt
+├── .env.example # Environment variable template
+└── README.md
+
+yaml
+Copy code
 
 ---
 
-## 🚀 How to Run
+## 🚀 How to Run Locally
 
 ### Prerequisites
 - Python 3.11+
 - Google Gemini API key (free tier available)
 
-### 1. Setup Environment
+### 1️⃣ Setup Environment
 
 ```bash
-# Clone or navigate to project
-cd VectorSeek
-
-# Create virtual environment
 python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-
-# Install dependencies
+venv\Scripts\activate      # Windows
 pip install -r requirements.txt
-```
-
-### 2. Configure API Key
-
-```bash
-# Copy template
+2️⃣ Configure API Key
+bash
+Copy code
 cp .env.example .env
+# Add: GEMINI_API_KEY=your_key_here
+Get API key: https://ai.google.dev
 
-# Edit .env and add your Gemini API key
-# GEMINI_API_KEY=your_key_here
-```
+3️⃣ Add Documents
+bash
+Copy code
+# Place PDFs or TXT files here
+data/documents/
+Supported content:
 
-Get free API key: https://ai.google.dev
+Research papers
 
-### 3. Add Documents
+Books / chapters
 
-```bash
-# Place PDF or TXT files in data/documents/
-cp your_documents/*.pdf data/documents/
-cp your_documents/*.txt data/documents/
-```
+Technical documentation
 
-### 4. Run Application
+Reports and manuals
 
-```bash
-# First run - builds embeddings index automatically
+Notes and whitepapers
+
+4️⃣ Run the App
+bash
+Copy code
 streamlit run app.py
+App opens at: http://localhost:8501
 
-# Application opens at http://localhost:8501
-```
+📚 Supported Use Cases
+📘 Research paper analysis
 
----
+📕 Book and chapter Q&A
 
-## 🔄 Research Paper Analysis Workflow
+🛠️ Technical documentation assistant
 
-1. **Paper Upload** - Upload research papers in PDF format
-2. **Semantic Indexing** - Intelligent sentence-level chunking preserves citations and context
-3. **Query Embedding** - Convert research question to semantic embedding
-4. **Relevant Section Retrieval** - FAISS finds top-5 most relevant paper sections
-5. **Academic Analysis** - Gemini 2.5 Flash performs rigorous research analysis
-6. **Evidence-Based Response** - Generate answer with citations to paper sections
-7. **Source Attribution** - Display exact sections referenced in the analysis
+🧾 Policy and compliance search
 
----
+🎓 Study and exam preparation
 
-## 📚 Why This Approach for Research?
+💼 Enterprise knowledge base search
 
-### Advantages for Academic Research:
-- ✅ **Citation Preservation** - Sentence-level chunking maintains research integrity
-- ✅ **Semantic Accuracy** - No hallucinations, purely evidence-based answers
-- ✅ **Literature Analysis** - Quickly understand and cross-reference multiple papers
-- ✅ **Privacy Focused** - Papers stay local, only queries sent to cloud
-- ✅ **Research Rigorous** - Prompting enforces academic standards
+💡 Why Hybrid RAG?
+Advantages:
+✅ No LLM runs locally
 
-### Why Semantic Search for Papers:
-- ✅ **Beyond Keywords** - Finds semantically related content, not just keyword matches
-- ✅ **Cross-Disciplinary** - Understands related concepts across domains
-- ✅ **Research Quality** - Better handles complex academic language and jargon
-- ✅ **Efficiency** - Reduces manual paper skimming by 90%
+✅ Works on low-resource machines
 
----
+✅ Scales to large document collections
 
-## 🎯 Why Google Gemini 2.5 Flash?
+✅ Strong hallucination control
 
-- **Performance**: Best reasoning capability among efficient models
-- **Speed**: Optimized for streaming and real-time responses
-- **Context**: 1 million token window for comprehensive understanding
-- **Reliability**: Google's managed infrastructure with 99.9% uptime
-- **Cost**: Competitive pricing for production workloads
-- **Free Tier**: Sufficient quota for development and testing
+✅ Industry-standard architecture
 
----
+Why Semantic Search?
+Goes beyond keyword matching
 
-## 💡 Key Implementation Details
+Understands meaning and context
 
-### Research Paper Processing (`embeddings/build_index.py`)
-- **PDF Extraction** - Extracts full text while preserving structure
-- **Sentence-Level Chunking** - Splits by sentences, not word counts, preserving semantic units
-- **Citation Preservation** - Maintains research citations and references within chunks
-- **Intelligent Overlap** - 100+ word overlaps ensure context continuity across citations
-- **Embeddings** - Uses `all-MiniLM-L6-v2` for academic text understanding
-- **Index Building** - Creates FAISS index for fast semantic similarity search
+Handles technical and academic language
 
-### Academic Semantic Retrieval (`rag/retriever.py`)
-- Uses `all-MiniLM-L6-v2` tuned for academic vocabulary
-- L2 distance metric optimized for research semantics
-- Returns top-k relevant sections with similarity scores
-- Tracks source papers for citation attribution
-- Handles multi-paper retrieval seamlessly
+Enables cross-document reasoning
 
-### Research-Focused LLM Integration (`rag/gemini_llm.py`)
-- **Academic Prompting** - Enforces rigorous research analysis standards
-- **Evidence Requirements** - Requires citations to retrieved paper sections
-- **Methodology Understanding** - Prompts include guidelines for academic rigor
-- **Limitation Acknowledgment** - Encourages discussion of research limitations
-- **Structured Output** - Returns answers with supporting evidence and implications
-- **Gemini 2.5 Flash** - Superior reasoning for complex academic content
+🎯 Why Google Gemini 2.5 Flash?
+High-quality reasoning
 
-### RAG Pipeline (`rag/rag_pipeline.py`)
-- Orchestrates paper retrieval → academic analysis workflow
-- Batch processing for analyzing multiple papers
-- Configurable retrieval parameters (top-k sections)
-- Returns structured results with source citations
+Fast response time
 
-### Research Interface (`app.py`)
-- **Paper Upload** - Direct PDF upload with semantic indexing
-- **Interactive Analysis** - Chat-based Q&A for paper exploration
-- **Citation Panel** - Shows exact sections referenced in responses
-- **Search Settings** - Control retrieval depth and specificity
-- **Status Indicators** - Real-time paper indexing status
+Large context window
 
----
+Cloud-managed reliability
 
-## 📊 Performance Characteristics
+Free tier suitable for development
 
-| Component | Performance |
-|-----------|-------------|
-| Document Indexing | ~100 docs/min (one-time) |
-| Query Retrieval | <100ms (FAISS) |
-| LLM Generation | ~2-5s (streaming) |
-| Total Response | ~3-6s (end-to-end) |
+Production-grade scalability
 
----
+🔒 Security & Privacy
+API keys managed via environment variables / Streamlit Secrets
 
-## 🔒 Security & Privacy
+No secrets committed to GitHub
 
-- API key stored in `.env` (never committed)
-- Documents processed locally only
-- Only query text sent to Gemini API
-- Context retrieved from local FAISS index
-- No intermediate storage of sensitive data
+Documents processed locally
 
----
+Only retrieved context sent to LLM
 
-## 📚 Dependencies
+No persistent cloud storage of documents
 
-| Package | Version | Purpose |
-|---------|---------|---------|
-| streamlit | 1.28.1 | Web UI framework |
-| google-generativeai | 0.3.1 | Gemini API client |
-| sentence-transformers | 2.2.2 | Embedding model |
-| faiss-cpu | 1.7.4 | Vector search |
-| PyPDF2 | 3.0.1 | PDF parsing |
-| python-dotenv | 1.0.0 | Environment config |
+📊 Performance
+Component	Latency
+Vector Retrieval	<100 ms
+LLM Response	2–5 s
+End-to-End	~3–6 s
 
----
+🎓 Resume-Ready Highlights
+Designed and implemented a Hybrid RAG system using FAISS and cloud LLMs
 
-## 🎓 Resume-Ready Highlights
+Built semantic document search with transformer embeddings
 
-**Architecture & Design:**
-- Implemented hybrid RAG combining FAISS + cloud LLM
-- Designed scalable document chunking with overlap strategy
-- Architected retrieval pipeline with source tracking
+Integrated Google Gemini 2.5 Flash for scalable inference
 
-**Technical Implementation:**
-- Built production-grade Python with type hints and error handling
-- Integrated Google Generative AI SDK with streaming support
-- Implemented semantic search using transformer embeddings
-- Created FAISS vector database with persistence layer
+Implemented hallucination-resistant Q&A with source attribution
 
-**Full-Stack Development:**
-- Developed chat UI with Streamlit (frontend)
-- Built RAG orchestration layer (backend)
-- Implemented document processing pipeline (ETL)
-- Deployed all components without external dependencies
+Deployed end-to-end AI system using Streamlit Cloud
 
-**Best Practices:**
-- Modular code structure (separable components)
-- Comprehensive error handling and logging
-- Caching strategies (embeddings, index reuse)
-- Environment-based configuration
+🚀 Future Enhancements
+Multi-language document support
 
----
+Document summarization
 
-## 🐛 Troubleshooting
+Conversational memory
 
-**Issue: "GEMINI_API_KEY not found"**
-- Solution: Create `.env` file with valid API key from https://ai.google.dev
+Metadata-based filtering
 
-**Issue: "Index file not found"**
-- Solution: Ensure `data/documents/` contains PDF/TXT files, run first query to auto-build index
+Domain-specific embedding fine-tuning
 
-**Issue: "No chunks to index"**
-- Solution: Check that documents in `data/documents/` are readable (valid PDF/TXT format)
+Usage analytics dashboard
 
-**Issue: Slow response time**
-- Solution: Reduce top_k parameter in sidebar or increase system resources
-
----
-
-## 📝 License
-
-This project is open source and available for educational and commercial use.
-
----
-
-## 🚀 Future Enhancements
-
-- Multi-language support
-- Document summarization
-- Conversation memory with context continuation
-- Advanced filtering and metadata-based retrieval
-- Fine-tuned embedding models for domain-specific use
-- Batch processing with job queuing
-- Analytics dashboard for query patterns
-
----
-
-**Built with ❤️ for production-ready AI systems**
+📝 License
+Open-source project for educational and commercial use.
